@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - User Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #f5f6f8;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 550px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1fbad6;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #444;
+            margin: 20px 0 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 13px;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: #1fbad6;
+            outline: none;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn.primary {
+            background: #1fbad6;
+            color: #fff;
+        }
+
+        .btn.primary:hover {
+            background: #1ca7c0;
+        }
+
+        .btn.remove {
+            background: #ff4d4d;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn.remove:hover {
+            background: #e63939;
+        }
+
+        .admin-login {
+            display: block;
+        }
+
+        #admin-content {
+            display: none;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: block;
+        }
+
+        .user-table th, .user-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .user-table th {
+            background: #f9f9f9;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .user-table td {
+            vertical-align: middle;
+        }
+
+        .user-table th:nth-child(3), .user-table td:nth-child(3) {
+            width: 20%;
+            text-align: center;
+        }
+
+        .user-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1><a href="../test/index.html"></a>Admin Panel - User Management</h1>
+        <div class="admin-login">
+            <input type="text" id="admin-username" placeholder="Admin Username" value="admin">
+            <input type="password" id="admin-password" placeholder="Admin Password" value="admin123">
+            <button class="btn primary" onclick="adminLogin()">Login</button>
+        </div>
+        <div id="admin-content">
+            <h2>Add New User</h2>
+            <input type="text" id="new-username" placeholder="New Username">
+            <input type="password" id="new-password" placeholder="New Password">
+            <button class="btn primary" onclick="addUser()">Add User</button>
+            <h2>Registered Users</h2>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Attempted</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function adminLogin() {
+            const username = document.getElementById("admin-username").value.trim();
+            const password = document.getElementById("admin-password").value.trim();
+            if (username === "admin" && password === "admin123") {
+                document.querySelector(".admin-login").style.display = "none";
+                document.getElementById("admin-content").style.display = "block";
+                loadUsers();
+            } else {
+                alert("Invalid admin credentials! Use 'admin' / 'admin123'.");
+            }
+        }
+
+        function addUser() {
+            const username = document.getElementById("new-username").value.trim();
+            const password = document.getElementById("new-password").value.trim();
+            if (username && password) {
+                const users = JSON.parse(localStorage.getItem("users") || "[]");
+                if (users.some(u => u.username === username)) {
+                    alert("Username already exists!");
+                    return;
+                }
+                users.push({ username, password, hasAttempted: false }); // Initialize hasAttempted as false
+                localStorage.setItem("users", JSON.stringify(users));
+                document.getElementById("new-username").value = "";
+                document.getElementById("new-password").value = "";
+                loadUsers();
+            } else {
+                alert("Please enter both username and password!");
+            }
+        }
+
+        function removeUser(username) {
+            let users = JSON.parse(localStorage.getItem("users") || "[]");
+            users = users.filter(u => u.username !== username);
+            localStorage.setItem("users", JSON.stringify(users));
+            loadUsers();
+        }
+
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem("users") || "[]");
+            const userList = document.getElementById("user-list");
+            userList.innerHTML = "";
+            users.forEach(user => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.password}</td>
+                    <td>${user.hasAttempted ? "Yes" : "No"}</td>
+                    <td><button class="btn remove" onclick="removeUser('${user.username}')">Remove</button></td>
+                `;
+                userList.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
