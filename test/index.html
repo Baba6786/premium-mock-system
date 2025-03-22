@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRIME MOCK - Folk Dance Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div id="login-page" class="login-container">
+            <h1><a href="../admin/admin.html"></a>PRIME MOCK LOGIN</h1>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button class="btn primary" onclick="login()">Login</button>
+        </div>
+
+        <header id="header" class="header" style="display: none;">
+            <div class="header-left">
+                <h1>Folk Dance Mock Test</h1>
+                <p>PRIME Mock TEST</p>
+            </div>
+            <div class="header-right">
+                <div class="timer">Time Left: <span id="time">00:25:00</span></div>
+                <button class="header-btn" onclick="toggleFullScreen()">Full Screen</button>
+                <button class="header-btn pause" onclick="pauseTest()">Pause</button>
+                <button class="header-btn" onclick="confirmEndTest()">Submit Test</button>
+            </div>
+        </header>
+
+        <button id="toggle-btn" class="js-toggle-sidebar-btn" onclick="toggleSidebar()" style="display: none;">></button>
+
+        <div id="main-content" class="main-content" style="display: none;">
+            <section class="question-area">
+                <div>
+                    <div class="question-header">
+                        <h2>Question <span id="q-number">1</span> of 100</h2>
+                    </div>
+                    <div class="question-content">
+                        <p id="question-text">Loading question...</p>
+                        <div id="options" class="options"></div>
+                    </div>
+                </div>
+                <div class="question-controls">
+                    <button id="prev-btn" class="btn primary disabled" onclick="prevQuestion()">Previous</button>
+                    <div>
+                        <button id="mark-review-btn" class="btn mark-review" onclick="markForReview()">Mark for Review</button>
+                        <button id="next-btn" class="btn primary" onclick="nextQuestion()">Save & Next</button>
+                        <button id="submit-btn" class="btn submit" onclick="confirmEndTest()" style="display: none;">Submit Test</button>
+                    </div>
+                </div>
+            </section>
+
+            <aside id="sidebar" class="sidebar">
+                <h3>Question Palette</h3>
+                <div class="palette-stats">
+                    <div><span class="legend-dot not-answered"></span> Not Answered: <span id="not-answered-count">100</span></div>
+                    <div><span class="legend-dot answered"></span> Answered: <span id="answered-count">0</span></div>
+                    <div><span class="legend-dot current"></span> Current: <span id="current-count">1</span></div>
+                    <div><span class="legend-dot marked"></span> Marked for Review: <span id="marked-count">0</span></div>
+                    <div><span class="legend-dot marked-answered"></span> Marked & Answered: <span id="marked-answered-count">0</span></div>
+                    <div><span class="legend-dot visited-not-attempted"></span> Visited Not Attempted: <span id="visited-not-attempted-count">0</span></div>
+                </div>
+                <div class="palette-grid" id="palette-buttons"></div>
+            </aside>
+        </div>
+
+        <div id="result-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>Test Results</h2>
+                <div class="stats">
+                    <p>Total Questions: 100</p>
+                    <p>Correct Answers: <span id="correct">0</span></p>
+                    <p>Wrong Answers: <span id="wrong">0</span></p>
+                    <p>Unattempted: <span id="unattempted">0</span></p>
+                    <p>Total Score (2 marks each, -0.5 for wrong): <span id="score">0</span>/200</p>
+                </div>
+                <section id="analysis" class="question-area analysis">
+                    <div>
+                        <div class="question-header">
+                            <h2>Analysis - Question <span id="analysis-q-number">1</span> of 100</h2>
+                        </div>
+                        <div class="question-content">
+                            <p id="analysis-question-text">Loading analysis...</p>
+                            <div id="analysis-options" class="options"></div>
+                            <div id="explanation" class="explanation"></div>
+                        </div>
+                    </div>
+                    <div class="question-controls">
+                        <button id="analysis-prev-btn" class="btn primary disabled" onclick="prevAnalysisQuestion()">Previous</button>
+                        <button id="analysis-next-btn" class="btn primary" onclick="nextAnalysisQuestion()">Next</button>
+                    </div>
+                </section>
+                <button class="btn primary" onclick="location.reload()">Close</button>
+            </div>
+        </div>
+
+        <div id="confirm-modal" class="confirm-modal" style="display: none;">
+            <h2>Confirm Submission</h2>
+            <p>Are you sure you want to submit the test?</p>
+            <button class="btn primary" onclick="endTest()">Submit</button>
+            <button class="btn submit" onclick="cancelSubmit()">Cancel</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
